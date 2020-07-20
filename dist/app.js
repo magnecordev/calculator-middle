@@ -643,7 +643,7 @@ class Order extends DBO {
                         else {
                             if (i)
                                 html += `Your order UID is ${GUID}. Place this in the calculator search box to access/modify your order later.<br><br>`;
-                            let detailArr = [["Property", "Value"].concat((i ? ["Retail Price"] : []))];
+                            let detailArr = [["Property", "Value"].concat((i ? [] : ["Retail Price"]))];
                             detailArr.push(["Name", `${order.firstName} ${order.lastName}`], ["Address", `${order.address.street}<br>
                             ${order.address.city}, ${states[order.address.stateID].stateName} ${order.address.zipCode}`], ["Phone Number", `${order.phoneNumber}`], ["Email Address", `${order.emailAddress}`], ["Vehicle", `${order.vehicle.year} ${order.vehicle.make} ${order.vehicle.model}`]);
                             if (order.engineCode)
@@ -654,33 +654,29 @@ class Order extends DBO {
                             detailArr.push(["Cylinder Count", `${order.cylinderCount}`], ["Valve Count", `${order.valveCount}`], ["SOHC/DOHC", `${(order.isDOHC ? "DOHC" : "SOHC")}`], ["Coil Pack Type", `${coilPackTypes[order.coilPackTypeID].coilPackName}`]);
                             if (coilPackTypes[order.coilPackTypeID].isMeasureUIVisible)
                                 detailArr.push(["Coil Tower Outer Diameter", `${Number(order.coilTowerOuterDiameter)} inches`], ["Cavity Depth", `${Number(order.cavityDepth)} inches`]);
-                            detailArr.push(["Cable Type", `${cableTypes[order.cableTypeID].cableTypeName}`], ["Numbered Cables", `${transformBoolean(order.isNumbered)}`].concat((i ? [`$${numberedPrice}`] : [])));
+                            detailArr.push(["Cable Type", `${cableTypes[order.cableTypeID].cableTypeName}`], ["Numbered Cables", `${transformBoolean(order.isNumbered)}`].concat((i ? [] : [`$${numberedPrice}`])));
                             html += generateHTMLFromNestedArray(detailArr);
                             if (plugCables.length) {
                                 html += `<h3>Plug Cables</h3>`;
-                                let plugCableArr = [["Item"].concat((i ? ["Retail Price"] : []))];
+                                let plugCableArr = [["Item"].concat((i ? [] : ["Retail Price"]))];
                                 for (let cableIndex = 0; (cableIndex < plugCables.length); cableIndex++) {
                                     let plugCable = plugCables[cableIndex];
                                     let coilBoot = coilBoots[plugCable.coilBootID];
                                     let plugBoot = plugBoots[plugCable.plugBootID];
-                                    plugCableArr.push([`<em>Cable ${(cableIndex + 1)}</em>`], [`${coilBoot.bootName} (${coilBoot.code})`].concat((i ? [`$${(coilBoot.cost * 2.85).toFixed(2)}`] : [])), [`${coilBoot.terminal.terminalName} (${coilBoot.terminal.code})`].concat((i ? [`$${(coilBoot.terminal.cost * 2.85).toFixed(2)}`] :
-                                        [])), [`${plugCable.cableLength} inches of ${cableTypes[order.cableTypeID].cableTypeName} cable`].concat((i ?
-                                        [`$${((plugCable.cableLength * cableTypes[order.cableTypeID].cost * 2.85)).toFixed(2)}`] : [])), [`${plugBoot.bootName} (${plugBoot.code})`].concat((i ? [`$${(plugBoot.cost * 2.85).toFixed(2)}`] : [])), [`${plugBoot.terminal.terminalName} (${plugBoot.terminal.code})`].concat((i ? [`$${(plugBoot.terminal.cost * 2.85).toFixed(2)}`] :
-                                        [])));
+                                    plugCableArr.push([`<em>Cable ${(cableIndex + 1)}</em>`], [`${coilBoot.bootName} (${coilBoot.code})`].concat((i ? [] : [`$${(coilBoot.cost * 2.85).toFixed(2)}`])), [`${coilBoot.terminal.terminalName} (${coilBoot.terminal.code})`].concat((i ? [] : [`$${(coilBoot.terminal.cost * 2.85).toFixed(2)}`])), [`${plugCable.cableLength} inches of ${cableTypes[order.cableTypeID].cableTypeName} cable`].concat((i ? [] :
+                                        [`$${((plugCable.cableLength * cableTypes[order.cableTypeID].cost * 2.85)).toFixed(2)}`])), [`${plugBoot.bootName} (${plugBoot.code})`].concat((i ? [] : [`$${(plugBoot.cost * 2.85).toFixed(2)}`])), [`${plugBoot.terminal.terminalName} (${plugBoot.terminal.code})`].concat((i ? [] : [`$${(plugBoot.terminal.cost * 2.85).toFixed(2)}`])));
                                 }
                                 html += generateHTMLFromNestedArray(plugCableArr);
                             }
                             if (coilCables.length) {
                                 html += `<h3>Coil Cables</h3>`;
-                                let coilCableArr = [["Item"].concat((i ? ["Retail Price"] : []))];
+                                let coilCableArr = [["Item"].concat((i ? [] : ["Retail Price"]))];
                                 for (let cableIndex = 0; (cableIndex < coilCables.length); cableIndex++) {
                                     let coilCable = coilCables[cableIndex];
                                     let coilBoot = coilBoots[coilCable.coilBootID];
                                     let plugBoot = plugBoots[coilCable.plugBootID];
-                                    coilCableArr.push([`<em>Cable ${(cableIndex + 1)}</em>`], [`${coilBoot.bootName} (${coilBoot.code})`].concat((i ? [`$${(coilBoot.cost * 2.85).toFixed(2)}`] : [])), [`${coilBoot.terminal.terminalName} (${coilBoot.terminal.code})`].concat((i ? [`$${(coilBoot.terminal.cost * 2.85).toFixed(2)}`] :
-                                        [])), [`${coilCable.cableLength} inches of ${cableTypes[order.cableTypeID].cableTypeName} cable`].concat((i ?
-                                        [`$${((coilCable.cableLength * cableTypes[order.cableTypeID].cost * 2.85)).toFixed(2)}`] : [])), [`${plugBoot.bootName} (${plugBoot.code})`].concat((i ? [`$${(plugBoot.cost * 2.85).toFixed(2)}`] : [])), [`${plugBoot.terminal.terminalName} (${plugBoot.terminal.code})`].concat((i ? [`$${(plugBoot.terminal.cost * 2.85).toFixed(2)}`] :
-                                        [])));
+                                    coilCableArr.push([`<em>Cable ${(cableIndex + 1)}</em>`], [`${coilBoot.bootName} (${coilBoot.code})`].concat((i ? [] : [`$${(coilBoot.cost * 2.85).toFixed(2)}`])), [`${coilBoot.terminal.terminalName} (${coilBoot.terminal.code})`].concat((i ? [] : [`$${(coilBoot.terminal.cost * 2.85).toFixed(2)}`])), [`${coilCable.cableLength} inches of ${cableTypes[order.cableTypeID].cableTypeName} cable`].concat((i ?
+                                        [] : [`$${((coilCable.cableLength * cableTypes[order.cableTypeID].cost * 2.85)).toFixed(2)}`])), [`${plugBoot.bootName} (${plugBoot.code})`].concat((i ? [] : [`$${(plugBoot.cost * 2.85).toFixed(2)}`])), [`${plugBoot.terminal.terminalName} (${plugBoot.terminal.code})`].concat((i ? [] : [`$${(plugBoot.terminal.cost * 2.85).toFixed(2)}`])));
                                 }
                                 html += generateHTMLFromNestedArray(coilCableArr);
                             }
@@ -758,14 +754,15 @@ class Order extends DBO {
 }
 express.use(bodyparser.json(), (req, res, next) => {
     let origins = {
-        "localhost": true
+        "localhost": true,
+        "magnecorpc-middle.herokuapp.com": true
     };
     res.header("Access-Control-Allow-Headers", "Accept, AuthToken, Content-Type, Origin, X-Requested-With");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.header("Access-Control-Allow-Origin", (origins[req.hostname] ? req.get("origin") : "localhost:4200"));
     next();
 });
-express.listen(9000, () => __awaiter(this, void 0, void 0, function* () {
+express.listen((process.env.PORT || 9000), () => __awaiter(this, void 0, void 0, function* () {
     console.log("started Express server");
     //move endpoints here...?
 }));

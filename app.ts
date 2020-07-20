@@ -733,7 +733,7 @@ class Order extends DBO {
 express.use(bodyparser.json(), (req, res, next) => {
     let origins = {
         "localhost": true,
-        "lookitsnicholas.github.io": true
+        "magnecorpc-middle.herokuapp.com": true
     }
     res.header("Access-Control-Allow-Headers", "Accept, AuthToken, Content-Type, Origin, X-Requested-With")
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
