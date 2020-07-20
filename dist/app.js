@@ -374,15 +374,15 @@ class Dealer extends DBO {
         this.dealerName = null;
         this.emailAddress = null;
         this.foregroundColor = null;
-        this.hostname = null;
         this.isActive = false;
         this.logoURI = null;
-        this._readHostname = (hostname) => this._read(null, `SELECT * FROM Dealers WHERE HOSTNAME LIKE '${hostname}%'`, true, false, false)
+        this.origin = null;
+        this._readOrigin = (origin) => this._read(null, `SELECT * FROM Dealers WHERE ORIGIN LIKE '${origin}%'`, true, false, false)
             .then(data => {
             if (data)
                 return data;
             else
-                throw "No hosting dealer match was found.";
+                throw "No dealer matching the referer was found.";
         });
     }
 }
@@ -754,12 +754,12 @@ class Order extends DBO {
 }
 express.use(bodyparser.json(), (req, res, next) => {
     let origins = {
-        "localhost": true,
-        "magnecorpc-middle.herokuapp.com": true
+        "http://localhost:4200": true,
+        "https://magnecorpc-front.herokuapp.com": true
     };
     res.header("Access-Control-Allow-Headers", "Accept, AuthToken, Content-Type, Origin, X-Requested-With");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.header("Access-Control-Allow-Origin", (origins[req.hostname] ? req.get("origin") : "localhost:4200"));
+    res.header("Access-Control-Allow-Origin", (origins[req.get("origin")] ? req.get("origin") : "http://localhost:4200"));
     next();
 });
 express.listen((process.env.PORT || 9000), () => __awaiter(this, void 0, void 0, function* () {
@@ -772,7 +772,7 @@ express.get("/coilBoots", (req, res) => new CoilBoot()._read().then(data => res.
 express.get("/coilCableCoilBootMappings", (req, res) => new CoilCableCoilBootMapping()._read().then(data => res.send(data)).catch(error => res.status(500).send(error)));
 express.get("/coilCablePlugBootIDs", (req, res) => new CoilCablePlugBootIDs()._read().then(data => res.send(data[0])).catch(error => res.status(500).send(error)));
 express.get("/coilPackTypes", (req, res) => new CoilPackType()._read().then(data => res.send(data)).catch(error => res.status(500).send(error)));
-express.get("/dealer", (req, res) => new Dealer()._readHostname(req.hostname).then(data => res.send(data)).catch(error => res.status(500).send(error)));
+express.get("/dealer", (req, res) => new Dealer()._readOrigin(req.get("origin")).then(data => res.send(data)).catch(error => res.status(500).send(error)));
 express.get("/engineTypes", (req, res) => new EngineType()._read().then(data => res.send(data)).catch(error => res.status(500).send(error)));
 express.get("/order/GUID/:GUID", (req, res) => new Order()._readProperty("GUID", req.params.GUID, true, true).then(data => {
     if (data)
